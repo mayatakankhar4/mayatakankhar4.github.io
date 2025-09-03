@@ -1,0 +1,369 @@
+<!doctype html>
+
+<html lang="mr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Multi‑Tool + Spin Wheel — Ad‑ready</title>
+  <style>
+    :root{
+      --bg:#0f1220;--card:#14182a;--muted:#8a93a9;--text:#e7eaf3;--accent:#6ee7ff;--accent2:#a78bfa;--border:#232840;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(180deg,#0b0e1a,#0f1220);color:var(--text)}
+    a{color:var(--accent)}
+    header{position:sticky;top:0;z-index:50;background:rgba(15,18,32,.75);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+    .wrap{max-width:1100px;margin:0 auto;padding:14px 16px}
+    .title{display:flex;align-items:center;gap:10px}
+    .brand{font-weight:700;letter-spacing:.3px}
+    .search{flex:1}
+    .search input{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#0c1020;color:var(--text)}/* Ad slot */
+#ad-slot{width:100%;max-height:90px;overflow:hidden;display:flex;justify-content:center;align-items:center;padding:6px}
+.placeholder-ad{width:100%;max-width:728px;height:90px;border:2px dashed #374063;border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--muted);background:linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.06))}
+@media(max-width:480px){.placeholder-ad{height:60px;max-width:320px}}
+
+main.wrap{padding-top:18px}
+
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media(max-width:980px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.25);padding:14px}
+.card h3{margin:0 0 10px;font-size:18px}
+.muted{color:var(--muted);font-size:12px}
+.row{display:flex;gap:8px;align-items:center}
+.row.wrap{flex-wrap:wrap}
+.row > *{flex:1}
+input[type="text"],input[type="number"],select,textarea{width:100%;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:#0c1020;color:var(--text)}
+textarea{min-height:120px;resize:vertical}
+button{cursor:pointer;background:linear-gradient(90deg,var(--accent),var(--accent2));border:0;color:#0b0e1a;font-weight:700;padding:10px 14px;border-radius:12px}
+button.ghost{background:transparent;color:var(--text);border:1px solid var(--border)}
+button.warn{background:#ef4444;color:#fff}
+.pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#0c1020;color:var(--text);font-size:12px}
+.kpd{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.kpd button{padding:14px 10px}
+.out{background:#0c1020;border:1px dashed var(--border);border-radius:12px;padding:10px;min-height:44px}
+.small{font-size:12px}
+.center{display:flex;justify-content:center;align-items:center}
+.inline-ad{margin:10px 0}
+
+/* Spin wheel */
+.wheel-wrap{display:grid;grid-template-columns:320px 1fr;gap:16px}
+@media(max-width:980px){.wheel-wrap{grid-template-columns:1fr}}
+canvas#wheel{width:100%;max-width:340px;height:auto;background:#0c1020;border:1px solid var(--border);border-radius:50%}
+.winner{font-size:18px;margin-top:8px}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap title">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/200/svg"><circle cx="12" cy="12" r="10" stroke="#6ee7ff"/><path d="M12 6v6l4 2" stroke="#a78bfa" stroke-width="2"/></svg>
+        <div>
+          <div class="brand">All‑in‑One Tools + Spin Wheel</div>
+          <div class="muted">Utility + Fun • Ad‑ready</div>
+        </div>
+      </div>
+      <div class="search"><input id="search" placeholder="टूल शोधा (उदा. calculator, notes, spin)" /></div>
+    </div>
+    <div id="ad-slot" class="wrap">
+      <!-- Replace this placeholder with your AdSense code after approval -->
+      <div class="placeholder-ad">Ad space — replace with AdSense snippet</div>
+    </div>
+  </header>  <main class="wrap"><div class="inline-ad">
+  <div class="placeholder-ad" style="height:70px">Inline Ad — replace with AdSense</div>
+</div>
+
+<div id="tools" class="grid">
+
+  <!-- 1) Calculator -->
+  <section class="card" data-tags="calculator math calc गणित">
+    <h3>Calculator</h3>
+    <div class="row"><input id="calc-input" placeholder="उदा. 12*3 + 5/2" /></div>
+    <div class="row"><button id="calc-eval">Calculate</button><button class="ghost" id="calc-clear">Clear</button></div>
+    <div id="calc-out" class="out" aria-live="polite"></div>
+    <div class="kpd" style="margin-top:10px">
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button><button data-k="/">÷</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button><button data-k="*">×</button>
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button><button data-k="-">−</button>
+      <button data-k="0">0</button><button data-k=".">.</button><button data-k="(">(</button><button data-k=")">)</button>
+      <button data-k="+" style="grid-column: span 2">+</button><button id="calc-back" class="ghost" style="grid-column: span 2">⌫</button>
+    </div>
+    <div class="small muted">सूचना: basic + − × ÷, ( ) आणि दशांश. Math functions टाकायचे असतील तर उदा. <code>Math.sqrt(9)</code>.</div>
+  </section>
+
+  <!-- 2) Unit Converter -->
+  <section class="card" data-tags="unit converter length weight temperature युनिट">
+    <h3>Unit Converter</h3>
+    <div class="row wrap">
+      <select id="uc-type">
+        <option value="length">Length</option>
+        <option value="weight">Weight</option>
+        <option value="temp">Temperature</option>
+      </select>
+      <input id="uc-in" type="number" placeholder="मूल्य" />
+      <select id="uc-from"></select>
+      <span class="center">→</span>
+      <select id="uc-to"></select>
+    </div>
+    <div class="row"><button id="uc-convert">Convert</button><button id="uc-swap" class="ghost">Swap</button></div>
+    <div id="uc-out" class="out"></div>
+  </section>
+
+  <!-- 3) Stopwatch -->
+  <section class="card" data-tags="stopwatch timer स्टॉपवॉच">
+    <h3>Stopwatch</h3>
+    <div id="sw-time" class="out center" style="font-size:28px">00:00.00</div>
+    <div class="row"><button id="sw-start">Start</button><button id="sw-lap" class="ghost">Lap</button><button id="sw-reset" class="ghost">Reset</button></div>
+    <div id="sw-laps" class="small"></div>
+  </section>
+
+  <!-- 4) Countdown Timer -->
+  <section class="card" data-tags="countdown टायमर">
+    <h3>Countdown Timer</h3>
+    <div class="row"><input id="cd-min" type="number" placeholder="मिनिटे" /><input id="cd-sec" type="number" placeholder="सेकंद" /></div>
+    <div class="row"><button id="cd-start">Start</button><button id="cd-stop" class="ghost">Stop</button><button id="cd-reset" class="ghost">Reset</button></div>
+    <div id="cd-out" class="out center" style="font-size:24px">00:00</div>
+    <audio id="cd-beep"><source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAAAABAAACaW1hZ2Utd2F2AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" type="audio/wav"></audio>
+  </section>
+
+  <!-- 5) Password Generator -->
+  <section class="card" data-tags="password पासवर्ड">
+    <h3>Password Generator</h3>
+    <div class="row wrap"><input id="pw-len" type="number" value="12" /><label class="pill"><input type="checkbox" id="pw-upper" checked> Upper</label><label class="pill"><input type="checkbox" id="pw-lower" checked> Lower</label><label class="pill"><input type="checkbox" id="pw-num" checked> 0-9</label><label class="pill"><input type="checkbox" id="pw-sym"> Symbols</label></div>
+    <div class="row"><button id="pw-gen">Generate</button><button id="pw-copy" class="ghost">Copy</button></div>
+    <div id="pw-out" class="out" style="word-break:break-all"></div>
+  </section>
+
+  <!-- 6) Quick Notes -->
+  <section class="card" data-tags="notes quick-notes नोटस्">
+    <h3>Quick Notes</h3>
+    <textarea id="notes" placeholder="इथे नोंदी लिहा…"></textarea>
+    <div class="row"><button id="notes-save">Save</button><button id="notes-clear" class="ghost">Clear</button></div>
+    <div class="small muted">डेटा तुमच्या डिव्हाईसवर (localStorage) सेव्ह होतो.</div>
+  </section>
+
+  <!-- 7) To‑Do List -->
+  <section class="card" data-tags="todo to-do tasks काम">
+    <h3>To‑Do List</h3>
+    <div class="row"><input id="todo-input" placeholder="काम जोडा…" /><button id="todo-add">Add</button></div>
+    <ul id="todo-list" class="small" style="list-style:none;padding-left:0"></ul>
+    <div class="row"><button id="todo-clear" class="ghost warn">Clear All</button></div>
+  </section>
+
+  <!-- 8) Text Case Converter -->
+  <section class="card" data-tags="text case upper lower title वर्ड">
+    <h3>Text Case Converter</h3>
+    <textarea id="tc-in" placeholder="टेक्स्ट पेस्ट करा"></textarea>
+    <div class="row wrap">
+      <button data-case="upper">UPPER</button>
+      <button data-case="lower">lower</button>
+      <button data-case="title">Title Case</button>
+      <button data-case="sentence">Sentence case</button>
+      <button id="tc-copy" class="ghost">Copy</button>
+    </div>
+    <div id="tc-out" class="out"></div>
+  </section>
+
+  <!-- 9) Word & Character Counter -->
+  <section class="card" data-tags="word character count अक्षर शब्द">
+    <h3>Word & Character Counter</h3>
+    <textarea id="wc-in" placeholder="टेक्स्ट लिहा"></textarea>
+    <div id="wc-out" class="out small"></div>
+  </section>
+
+  <!-- 10) BMI Calculator -->
+  <section class="card" data-tags="bmi health body mass">
+    <h3>BMI Calculator</h3>
+    <div class="row"><input id="bmi-w" type="number" placeholder="Weight (kg)"/><input id="bmi-h" type="number" placeholder="Height (cm)"/></div>
+    <div class="row"><button id="bmi-go">Calculate BMI</button></div>
+    <div id="bmi-out" class="out"></div>
+  </section>
+
+  <!-- 11) Age Calculator -->
+  <section class="card" data-tags="age जन्म date age-calculator">
+    <h3>Age Calculator</h3>
+    <div class="row"><input id="age-dob" type="date" /><button id="age-go">Calculate</button></div>
+    <div id="age-out" class="out"></div>
+  </section>
+
+  <!-- 12) Tip Calculator -->
+  <section class="card" data-tags="tip restaurant bill">
+    <h3>Tip Calculator</h3>
+    <div class="row"><input id="tip-bill" type="number" placeholder="Bill amount"/><input id="tip-per" type="number" placeholder="Tip %" value="10"/></div>
+    <div class="row"><input id="tip-people" type="number" placeholder="People" value="1"/></div>
+    <div class="row"><button id="tip-go">Calculate</button></div>
+    <div id="tip-out" class="out"></div>
+  </section>
+
+  <!-- 13) Color Picker & Palette -->
+  <section class="card" data-tags="color रंग picker palette">
+    <h3>Color Picker</h3>
+    <div class="row"><input id="cp" type="color" value="#22d3ee" /><input id="cp-hex" placeholder="#22d3ee"/></div>
+    <div id="cp-out" class="out"></div>
+  </section>
+
+  <!-- 14) Random Quotes -->
+  <section class="card" data-tags="quote प्रेरणा motivational">
+    <h3>Random Quote</h3>
+    <div id="q-out" class="out">आजचा सुविचार…</div>
+    <div class="row"><button id="q-next">New Quote</button></div>
+  </section>
+
+  <!-- 15) Spin Wheel Game -->
+  <section class="card" data-tags="spin wheel game लकी ड्रॉ">
+    <h3>Spin Wheel (Lucky Draw)</h3>
+    <div class="wheel-wrap">
+      <div class="center" style="flex-direction:column">
+        <canvas id="wheel" width="340" height="340"></canvas>
+        <div class="row" style="margin-top:8px"><button id="spin">SPIN</button><button id="spin-reset" class="ghost">Reset</button></div>
+        <div id="winner" class="winner"></div>
+      </div>
+      <div>
+        <div class="muted small">Items (comma separated):</div>
+        <textarea id="items">Apple, Banana, Mango, Orange, Grapes, Pineapple</textarea>
+        <div class="row"><button id="apply-items">Apply</button><button id="remove-picked" class="ghost">Remove winners</button></div>
+        <div class="small muted">Tip: नावं/प्राईझेस कॉमा वापरून टाका. "Remove winners" ऑन ठेवल्यास निवडलेलं नाव पुढच्या स्पिनमधून बाहेर होईल.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+  </main>  <script>
+    // ========= Search filter =========
+    const search = document.getElementById('search');
+    search.addEventListener('input', () => {
+      const q = search.value.toLowerCase();
+      document.querySelectorAll('#tools > section').forEach(sec => {
+        const tags = (sec.dataset.tags || '').toLowerCase();
+        const title = (sec.querySelector('h3')?.textContent || '').toLowerCase();
+        sec.style.display = (tags.includes(q) || title.includes(q)) ? '' : 'none';
+      });
+    });
+
+    // ========= Calculator =========
+    const ci = document.getElementById('calc-input');
+    const co = document.getElementById('calc-out');
+    document.getElementById('calc-eval').onclick = () => {
+      try {
+        // Very basic safe eval: only numbers, ops, parentheses, Math. prefix
+        const expr = ci.value.trim();
+        if (!/^[-+*/().,\d\sMathsqrtcosintanlogexpabsmaxminpowPIE]+$/.test(expr.replace(/\bMath\./g,''))) {
+          throw new Error('Unsupported characters');
+        }
+        const res = Function('return (' + expr + ')')();
+        co.textContent = '= ' + res;
+      } catch(e){ co.textContent = 'Error: ' + e.message; }
+    };
+    document.getElementById('calc-clear').onclick = () => { ci.value=''; co.textContent=''; };
+    document.getElementById('calc-back').onclick = () => { ci.value = ci.value.slice(0,-1); };
+    document.querySelectorAll('.kpd button[data-k]').forEach(b=>b.onclick=()=>{ci.value+=b.dataset.k});
+
+    // ========= Unit Converter =========
+    const ucType = document.getElementById('uc-type');
+    const ucFrom = document.getElementById('uc-from');
+    const ucTo = document.getElementById('uc-to');
+    const ucIn = document.getElementById('uc-in');
+    const ucOut = document.getElementById('uc-out');
+
+    const UNITS = {
+      length:{ base:'m', list:{ m:1, cm:0.01, km:1000, inch:0.0254, ft:0.3048 } },
+      weight:{ base:'kg', list:{ kg:1, g:0.001, lb:0.45359237 } },
+      temp:{ base:'C', list:{ C:'C', F:'F', K:'K' } }
+    };
+
+    function fillUnits(){
+      const t = ucType.value;
+      ucFrom.innerHTML = ucTo.innerHTML = '';
+      for(const k of Object.keys(UNITS[t].list)){
+        const o1 = document.createElement('option'); o1.value = k; o1.textContent=k; ucFrom.appendChild(o1);
+        const o2 = document.createElement('option'); o2.value = k; o2.textContent=k; ucTo.appendChild(o2);
+      }
+      ucFrom.value = Object.keys(UNITS[t].list)[0];
+      ucTo.value = Object.keys(UNITS[t].list)[1] || ucFrom.value;
+    }
+    ucType.onchange = fillUnits; fillUnits();
+
+    function convert(){
+      const t = ucType.value; const v = parseFloat(ucIn.value);
+      if (Number.isNaN(v)) { ucOut.textContent = 'Enter a number'; return; }
+      let out;
+      if (t !== 'temp'){
+        const base = v * UNITS[t].list[ucFrom.value];
+        out = base / UNITS[t].list[ucTo.value];
+      } else {
+        let C;
+        if (ucFrom.value==='C') C=v; else if (ucFrom.value==='F') C=(v-32)/1.8; else C=v-273.15;
+        if (ucTo.value==='C') out=C; else if (ucTo.value==='F') out=C*1.8+32; else out=C+273.15;
+      }
+      ucOut.textContent = `${v} ${ucFrom.value} = ${(+out.toFixed(6))} ${ucTo.value}`;
+    }
+    document.getElementById('uc-convert').onclick = convert;
+    document.getElementById('uc-swap').onclick = ()=>{ const a=ucFrom.value; ucFrom.value=ucTo.value; ucTo.value=a; convert(); };
+
+    // ========= Stopwatch =========
+    const swTime = document.getElementById('sw-time');
+    const swStart = document.getElementById('sw-start');
+    const swLap = document.getElementById('sw-lap');
+    const swReset = document.getElementById('sw-reset');
+    const swLaps = document.getElementById('sw-laps');
+    let swRunning=false, swStartTs=0, swElapsed=0, swRAF;
+    function fmt(ms){ const m=Math.floor(ms/60000); const s=Math.floor((ms%60000)/1000); const cs=Math.floor((ms%1000)/10); return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`; }
+    function tick(){ const now=performance.now(); const t=swElapsed+(now-swStartTs); swTime.textContent=fmt(t); swRAF=requestAnimationFrame(tick); }
+    swStart.onclick=()=>{ if(!swRunning){ swRunning=true; swStart.textContent='Pause'; swStartTs=performance.now(); tick(); } else { swRunning=false; swStart.textContent='Start'; swElapsed += performance.now()-swStartTs; cancelAnimationFrame(swRAF); }};
+    swLap.onclick=()=>{ const t=swTime.textContent; const div=document.createElement('div'); div.textContent='Lap: '+t; swLaps.prepend(div); };
+    swReset.onclick=()=>{ swRunning=false; swElapsed=0; swStart.textContent='Start'; cancelAnimationFrame(swRAF); swTime.textContent='00:00.00'; swLaps.innerHTML=''; };
+
+    // ========= Countdown =========
+    const cdMin = document.getElementById('cd-min');
+    const cdSec = document.getElementById('cd-sec');
+    const cdOut = document.getElementById('cd-out');
+    const cdStart = document.getElementById('cd-start');
+    const cdStop = document.getElementById('cd-stop');
+    const cdReset = document.getElementById('cd-reset');
+    const cdBeep = document.getElementById('cd-beep');
+    let cdTimer=null, cdRemaining=0;
+    function cdFmt(s){ const m=Math.floor(s/60); const ss=s%60; return `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`; }
+    function cdTick(){ if(cdRemaining<=0){ clearInterval(cdTimer); cdTimer=null; cdOut.textContent='00:00'; try{cdBeep.play()}catch(_){} return; } cdRemaining--; cdOut.textContent=cdFmt(cdRemaining); }
+    cdStart.onclick=()=>{ const total=(parseInt(cdMin.value||'0')*60)+(parseInt(cdSec.value||'0')); if(total>0 && !cdTimer){ cdRemaining=total; cdOut.textContent=cdFmt(cdRemaining); cdTimer=setInterval(cdTick,1000);} };
+    cdStop.onclick=()=>{ clearInterval(cdTimer); cdTimer=null; };
+    cdReset.onclick=()=>{ clearInterval(cdTimer); cdTimer=null; cdRemaining=0; cdOut.textContent='00:00'; cdMin.value=''; cdSec.value=''; };
+
+    // ========= Password Generator =========
+    const pwChars = {
+      upper:'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      lower:'abcdefghijklmnopqrstuvwxyz',
+      num:'0123456789',
+      sym:'!@#$%^&*()-_=+[]{};:,.<>/?'
+    };
+    function genPw(){
+      const len = Math.max(4, parseInt(document.getElementById('pw-len').value||'12'));
+      const pools = [];
+      if(document.getElementById('pw-upper').checked) pools.push('upper');
+      if(document.getElementById('pw-lower').checked) pools.push('lower');
+      if(document.getElementById('pw-num').checked) pools.push('num');
+      if(document.getElementById('pw-sym').checked) pools.push('sym');
+      if(!pools.length){ alert('Select at least one set'); return; }
+      let s='';
+      for(let i=0;i<len;i++){
+        const p=pools[Math.floor(Math.random()*pools.length)];
+        const ch = pwChars[p][Math.floor(Math.random()*pwChars[p].length)];
+        s+=ch;
+      }
+      document.getElementById('pw-out').textContent=s;
+    }
+    document.getElementById('pw-gen').onclick=genPw;
+    document.getElementById('pw-copy').onclick=()=>{ const t=document.getElementById('pw-out').textContent; navigator.clipboard.writeText(t||''); };
+
+    // ========= Notes =========
+    const notes = document.getElementById('notes');
+    notes.value = localStorage.getItem('notes') || '';
+    document.getElementById('notes-save').onclick=()=>{ localStorage.setItem('notes', notes.value); };
+    document.getElementById('notes-clear').onclick=()=>{ notes.value=''; localStorage.removeItem('notes'); };
+
+    // ========= To‑Do =========
+    const todoList = document.getElementById('todo-list');
+    function loadTodos(){ const arr=JSON.parse(localStorage.getItem('todos')||'[]'); tod
